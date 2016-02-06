@@ -4,7 +4,7 @@ Overview
 Optflow is a C++/Python library for motion detection and motion-based 
 extrapolation and morphing algorithms.
 
-The motion detection algorithms included in optflow are:
+The motion detection algorithms included in Optflow are:
   * Lucas&Kanade local least-squares algorithm
   * global anisotropic diffusion algorithm by Proesmans et. al.
   * OpenCV implementation of the Lucas&Kanade algorithm
