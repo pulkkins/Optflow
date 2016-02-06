@@ -1,0 +1,95 @@
+Overview
+--------
+
+This package contains a library and testing suite for motion detection, 
+extrapolation and morphing algorithms. 
+
+The motion detection algorithms included in this package are:
+  * Lucas&Kanade local least-squares algorithm
+  * global anisotropic diffusion algorithm by Proesmans et. al.
+  * OpenCV implementation of the Lucas&Kanade algorithm
+
+The first two algorithms are implemented by the author of this package. 
+They generate dense vector fields, i.e. motion vectors for 
+each pixel in the source image. On the other hand, the OpenCV 
+implementation generates sparse motion fields. It extracts 
+the motion of a given set of "feature points". All algorithms 
+in this package use image pyramids.
+
+This package also contains algorithms for image warping by using 
+a computed motion field. The following methods are implemented:
+  * Inverse pixel-based extrapolation: For each pixel in the second source 
+    image, find the corresponding pixel in the first source image. Requires 
+    the inverse motion field (image 2->image 1).
+  * Forward mesh extrapolation: construct a textured triangle mesh from the image 
+    and transform the mesh by using the forward motion field (image 1->image 2).
+
+The third feature implemented in this package is morphing between two 
+images. In addition to cross-fading between images, the algorithm 
+uses the forward and inverse motion fields to warp the images 
+closer to each other before interpolating pixel values linearly. 
+This technique yields much better results than simple cross-fading. 
+
+Dependencies and installation
+-----------------------------
+
+Required dependencies (included in the package):
+  CImg                    http://cimg.sourceforge.net
+
+Optional dependencies:
+  Boost.Program_options   http://www.boost.org
+  CGAL                    http://www.cgal.org
+  OpenCV                  http://sourceforge.net/projects/opencv
+
+This package uses CMake as its build system. To build and 
+install the package, create a build directory, and type the 
+following commands in it:
+
+  cmake <src_dic> [optional_flags]
+  make
+  make install
+
+The last step is optional. You can also use the compiled packages 
+in the build directory. The src_dir argument points to the source directory. 
+Enabling and disabling external dependencies is done via the optional_flags 
+argument. The following flags are currently supported:
+
+  -DWITH_BOOST_PROGRAM_OPTIONS=ON/OFF  command-line interface via Boost.Program_options
+  -DWITH_CGAL=ON/OFF                   support for sparse motion fields via CGAL
+  -DWITH_OPENCV=ON/OFF                 support for OpenCV algorithms
+
+The test programs for the above features are "extractmotion", 
+"extrapolate" and "morph". To print their command-line syntax, 
+run them without arguments.
+
+Experimental support for MATLAB is also implemented. A MEX-file 
+and a MATLAB script for testing it are located in the matlab-directory.
+
+References
+----------
+
+The motion detection algorithms in this package are based on the 
+following articles:
+
+[1] J. Bouguet, Pyramidal Implementation of the Lucas Kanade 
+    Feature Tracker: Description of the Algorithm, Technical 
+    report, OpenCV documents, Intel Corporation, Microprocessor 
+    Research Labs, 2000
+
+[2] B.D. Lucas and T. Kanade, An iterative image registration 
+    technique with an application to stereo vision, in Proc. 
+    Seventh International Joint Conference on Artificial 
+    Intelligence, Vancouver, 1981, pp. 674-679
+
+[3] M. Proesmans, L. Van Gool, E. Pauwels, and A. Oosterlinck, 
+    Determination of optical ﬂow and its discontinuities using 
+    non-linear diffusion, in 3rd European Conference on Computer 
+    Vision, ECCV’94, 1994, Vol. 2, pp. 295–304.
+
+and the C-based implementations found at:
+
+ftp://ftp.csd.uwo.ca/pub/vision
+http://of-eval.sourceforge.net
+
+Author: Seppo Pulkkinen <seppo.pulkkinen@utu.fi>
+
