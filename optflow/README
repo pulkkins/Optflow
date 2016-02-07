@@ -1,8 +1,8 @@
 Overview
 --------
 
-Optflow is a C++/Python library for motion detection and motion-based 
-extrapolation and morphing algorithms.
+Optflow is a C++ library for motion detection and motion-based extrapolation 
+and morphing algorithms.
 
 The following motion detection algorithms are implemented in Optflow:
   * the Horn&Schunck variational approach
@@ -27,7 +27,7 @@ Dependencies and installation
 -----------------------------
 
 Required dependencies:
-  CImg        >= 1.5      http://cimg.sourceforge.net
+  CImg       >= 1.5       http://cimg.sourceforge.net
 
 Optional dependencies:
   Boost.Program_options   http://www.boost.org
@@ -93,4 +93,3 @@ ftp://ftp.csd.uwo.ca/pub/vision
 http://of-eval.sourceforge.net
 
 Author: Seppo Pulkkinen <seppo.pulkkinen@fmi.fi>
-
