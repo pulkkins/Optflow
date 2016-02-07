@@ -6,6 +6,7 @@ extrapolation and morphing algorithms.
 
 The motion detection algorithms included in Optflow are:
   * Lucas&Kanade local least-squares algorithm
+  * the Horn&Schunck variational approach
   * global anisotropic diffusion algorithm by Proesmans et. al.
   * OpenCV implementation of the Lucas&Kanade algorithm
 

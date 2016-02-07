@@ -1,2 +1,2 @@
 # Optflow
-C++/Python implementations of optical flow algorithms
+C++/Python implementations of optical flow algorithms and motion-based morphing and extrapolation.
