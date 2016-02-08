@@ -16,6 +16,8 @@ def interpolate(I1, I2, V, n):
     The second input image (must have the same shape as I1).
   V : array-like
     The motion vector field (must have the same shape as I1 and I2).
+  n : int
+    Number of frames to interpolate between the input images.
   
   Returns
   -------
