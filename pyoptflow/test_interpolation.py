@@ -41,11 +41,11 @@ I2_ubyte = utils.rainfall_to_ubyte(I2, R_min=0.05, R_max=10.0, filter_stddev=3.0
 
 # Compute the motion field by using the Python <-> C++ API and the Proesmans 
 # algorithm.
-V = extract_motion_proesmans(I1_ubyte, I2_ubyte, lam=100.0, num_iter=250, 
-                             num_levels=6)
+VF,VB = extract_motion_proesmans(I1_ubyte, I2_ubyte, lam=25.0, num_iter=250, 
+                                 num_levels=6)
 
 # Interpolate ten frames between the input images and plot them.
-I_interp = interpolate(I1, I2, V, 10)
+I_interp = interpolate(I1, I2, VF, 10, VB=VB)
 for i in range(len(I_interp)):
   figure()
   I = I_interp[i].copy()

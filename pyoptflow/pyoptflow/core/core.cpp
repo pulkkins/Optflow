@@ -45,17 +45,17 @@ CImg< double > extract_motion_lucaskanade(const CImg< unsigned char > &I1,
   return V;
 }
 
-CImg< double > extract_motion_proesmans(const CImg< unsigned char > &I1, 
-                                        const CImg< unsigned char > &I2, 
-                                        float lam, 
-                                        int num_iter, 
-                                        int num_levels)
+tuple extract_motion_proesmans(const CImg< unsigned char > &I1, 
+                               const CImg< unsigned char > &I2, 
+                               float lam, 
+                               int num_iter, 
+                               int num_levels)
 {
   PyramidalProesmans me(num_iter, lam, num_levels, Proesmans::NEUMANN);
-  CImg< double > V;
-  me.compute(I1, I2, V);
+  CImg< double > VF, VB;
+  me.compute(I1, I2, VF, VB);
   
-  return V;
+  return make_tuple(VF, VB);
 }
 
 BOOST_PYTHON_MODULE(core)

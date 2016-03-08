@@ -40,8 +40,8 @@ I2_ubyte = utils.rainfall_to_ubyte(I2, R_min=0.05, R_max=10.0, filter_stddev=3.0
 
 # Compute the motion field by using the Python <-> C++ API and the Proesmans 
 # algorithm.
-V = extract_motion_proesmans(I1_ubyte, I2_ubyte, lam=100.0, num_iter=250, 
-                             num_levels=6)
+V = extract_motion_proesmans(I1_ubyte, I2_ubyte, lam=25.0, num_iter=250, 
+                             num_levels=6)[0]
 
 # Extrapolate the first input image five time steps.
 for t in arange(1, 6):

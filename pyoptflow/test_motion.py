@@ -44,7 +44,7 @@ I2 = utils.rainfall_to_ubyte(I2, R_min=0.05, R_max=10.0, filter_stddev=3.0)
 
 # Compute the motion field by using the Python <-> C++ API and the Proesmans 
 # algorithm.
-V = extract_motion_proesmans(I1, I2, lam=100.0, num_iter=250, num_levels=6)
+V = extract_motion_proesmans(I1, I2, lam=25.0, num_iter=250, num_levels=6)[0]
 
 # Plot the U- and V- (horizontal and vertical) components of the motion field.
 figs = visualization.plot_motion_field_components(V, sel_comp=["U", "V"])

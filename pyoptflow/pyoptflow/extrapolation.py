@@ -19,7 +19,7 @@ def semilagrangian(I, V, t, n_steps, n_iter=3, inverse=True):
     field, and a forward field otherwise. V must have the same shape as I.
   t : float
     Time step length for extrapolation (1.0 is the time difference between the 
-    input images).
+    input images from which V has been computed).
   n_steps : int
     Number of intermediate time steps to use in the computation.
   n_iter : int
