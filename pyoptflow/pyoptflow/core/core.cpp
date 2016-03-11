@@ -8,6 +8,18 @@
 #include "PyramidalProesmans.h"
 #include "utils.hpp"
 
+#ifdef WITH_BROX
+#include "../ext/brox/of.h"
+#endif
+
+#ifdef WITH_CLG
+extern "C" {
+#include "../ext/clg/clg_of.h"
+}
+#endif
+
+#include <iostream>
+
 using namespace boost::python;
 using namespace boost::python::numeric;
 using namespace cimg_library;
@@ -58,6 +70,97 @@ tuple extract_motion_proesmans(const CImg< unsigned char > &I1,
   return make_tuple(VF, VB);
 }
 
+#ifdef WITH_BROX
+CImg< double > extract_motion_brox(const CImg< unsigned char > &I1, 
+                                   const CImg< unsigned char > &I2, 
+                                   float sigma, 
+                                   float alpha, 
+                                   float gamma)
+{
+  int w = I1.width();
+  int h = I1.height();
+  int x, y, i;
+  
+  CTensor<float> img1(w, h, 1);
+  CTensor<float> img2(w, h, 1);
+  
+  for (x = 0; x < w; x++)
+  {
+    for (y = 0; y < h; y++)
+    {
+      img1(x, y, 0) = I1(x, y);
+      img2(x, y, 0) = I2(x, y);
+    }
+  }
+  
+  CTensor<float> flow;
+  opticalFlow(img1, img2, flow, sigma, alpha, gamma);
+  
+  CImg< double > V(w, h, 1, 2);
+  for (x = 0; x < w; x++)
+    for (y = 0; y < h; y++)
+      for (i = 0; i < 2; i++)
+        V(x, y, 0, i) = flow(x, y, i);
+  
+  return V;
+}
+#endif
+
+#ifdef WITH_CLG
+CImg< double > extract_motion_clg(const CImg< unsigned char > &I1, 
+                                  const CImg< unsigned char > &I2, 
+                                  int iterations, 
+                                  double alpha, 
+                                  double rho,
+                                  double sigma, 
+                                  double wfactor,
+                                  int nscales)
+{
+  int w = I1.width();
+  int h = I1.height();
+  int x, y;
+  
+  double *image1, *image2;
+  double *uOut, *vOut;
+  
+  image1 = new double[w*h];
+  image2 = new double[w*h];
+  uOut   = new double[w*h];
+  vOut   = new double[w*h];
+  
+  for (y = 0; y < h; y++)
+  {
+    for (x = 0; x < w; x++)
+    {
+      image1[x+y*w] = I1(x, y);
+      image2[x+y*w] = I2(x, y);
+    }
+  }
+  
+  calcMSCLG_OF(image1, image2, uOut, vOut, h, w, iterations, alpha, rho, sigma, 
+               wfactor, nscales, 0.65, 1, 0);
+  
+  delete[] image1;
+  delete[] image2;
+  
+  CImg< double > V(w, h, 1, 2);
+  
+  for (y = 0; y < h; y++)
+  {
+    for (x = 0; x < w; x++)
+    {
+      V(x, y, 0, 0) = uOut[x+y*w];
+      V(x, y, 0, 1) = vOut[x+y*w];
+    }
+  }
+  
+  delete[] uOut;
+  delete[] vOut;
+  
+  return V;
+}
+#endif
+
 BOOST_PYTHON_MODULE(core)
 {
   array::set_module_and_type("numpy", "ndarray");
@@ -83,4 +186,21 @@ BOOST_PYTHON_MODULE(core)
       (boost::python::arg("lam")=100.0f, 
        boost::python::arg("num_iter")=200, 
        boost::python::arg("num_levels")=4));
+  
+  #ifdef WITH_BROX
+  def("extract_motion_brox", &extract_motion_brox, 
+      (boost::python::arg("sigma")=0.8f, 
+       boost::python::arg("alpha")=80.0f, 
+       boost::python::arg("gamma")=5.0f));
+  #endif
+  
+  #ifdef WITH_CLG
+  def("extract_motion_clg", &extract_motion_clg, 
+      (boost::python::arg("iterations")=1000, 
+       boost::python::arg("alpha")=200.0, 
+       boost::python::arg("rho")=5.0, 
+       boost::python::arg("sigma")=0.85, 
+       boost::python::arg("wfactor")=1.8, 
+       boost::python::arg("nscales")=4));
+  #endif
 }
