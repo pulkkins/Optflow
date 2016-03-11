@@ -1,6 +1,6 @@
 """Methods for motion-based temporal interpolation between two input images."""
 
-from numpy import arange, dstack, meshgrid, reshape, size
+from numpy import arange, dstack, meshgrid, nan, reshape, size
 from scipy.ndimage.interpolation import map_coordinates
 
 def interpolate(I1, I2, VF, n, VB=None):
@@ -48,10 +48,12 @@ def interpolate(I1, I2, VF, n, VB=None):
   for tw in tws:
     XYW = XY + tw*VB[:,:,0:2]
     XYW = [XYW[:, :, 1], XYW[:, :, 0]]
-    I1_warped = reshape(map_coordinates(I1, XYW), I1.shape)
+    I1_warped = reshape(map_coordinates(I1, XYW, order=1, mode="constant", 
+                        cval=nan), I1.shape)
     XYW = XY + (1.0-tw)*VF[:,:,0:2]
     XYW = [XYW[:, :, 1], XYW[:, :, 0]]
-    I2_warped = reshape(map_coordinates(I2, XYW), I2.shape)
+    I2_warped = reshape(map_coordinates(I2, XYW, order=1, mode="constant", 
+                        cval=nan), I2.shape)
     
     I_result.append((1.0-tw)*I1_warped + tw*I2_warped)
   

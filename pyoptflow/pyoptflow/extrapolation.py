@@ -52,11 +52,11 @@ def semilagrangian(I, V, t, n_steps, n_iter=3, inverse=True):
       XYW = XY + V_tot - V_inc / 2.0
       XYW = [XYW[:, :, 1], XYW[:, :, 0]]
       V_inc[:, :, 0] = \
-        delta_t * reshape(map_coordinates(V[:, :, 0], XYW, mode="constant", cval=nan), 
-                          V.shape[0:2])
+        delta_t * reshape(map_coordinates(V[:, :, 0], XYW, order=1, 
+                          mode="constant", cval=nan), V.shape[0:2])
       V_inc[:, :, 1] = \
-        delta_t * reshape(map_coordinates(V[:, :, 1], XYW, mode="constant", cval=nan), 
-                          V.shape[0:2])
+        delta_t * reshape(map_coordinates(V[:, :, 1], XYW, order=1, 
+                          mode="constant", cval=nan), V.shape[0:2])
     
     V_tot += coeff * V_inc
   
