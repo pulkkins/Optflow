@@ -12,6 +12,14 @@
 #include "../ext/brox/of.h"
 #endif
 
+#ifdef WITH_BROX2
+#include "../ext/brox2/brox_optic_flow.h"
+#endif
+
+#ifdef WITH_BROX_ST
+#include "../ext/brox_st/brox_optic_flow.h"
+#endif
+
 #ifdef WITH_CLG
 extern "C" {
 #include "../ext/clg/clg_of.h"
@@ -106,6 +114,123 @@ CImg< double > extract_motion_brox(const CImg< unsigned char > &I1,
 }
 #endif
 
+#ifdef WITH_BROX2
+CImg< double > extract_motion_brox2(const CImg< unsigned char > &I1, 
+                                    const CImg< unsigned char > &I2, 
+                                    float alpha, 
+                                    float gamma, 
+                                    int nscales, 
+                                    float nu, 
+                                    float tol, 
+                                    int inner_iter, 
+                                    int outer_iter)
+{
+  int w = I1.width();
+  int h = I1.height();
+  int x, y, i;
+  
+  float *I1_arr = new float[w*h];
+  float *I2_arr = new float[w*h];
+  float *u = new float[w*h];
+  float *v = new float[w*h];
+  
+  for (x = 0; x < w; x++)
+  {
+    for (y = 0; y < h; y++)
+    {
+      I1_arr[y*w + x] = I1(x, y);
+      I2_arr[y*w + x] = I2(x, y);
+    }
+  }
+  
+  brox_optic_flow(I1_arr, I2_arr, u, v, w, h, alpha, gamma, nscales, nu, tol, 
+                  inner_iter, outer_iter, 0);
+  
+  CImg< double > V(w, h, 1, 2);
+  for (x = 0; x < w; x++)
+  {
+    for (y = 0; y < h; y++)
+    {
+      V(x, y, 0, 0) = u[y*w + x];
+      V(x, y, 0, 1) = v[y*w + x];
+    }
+  }
+  
+  delete[] I1_arr;
+  delete[] I2_arr;
+  delete[] u;
+  delete[] v;
+  
+  return V;
+}
+#endif
+
+#ifdef WITH_BROX_ST
+/*CImg< double > extract_motion_brox_st(const tuple &I, float alpha, float gamma, 
+  int nscales, float nu, float tol, int inner_iter, int outer_iter)*/
+tuple extract_motion_brox_st(const tuple &I, float alpha, float gamma, 
+  int nscales, float nu, float tol, int inner_iter, int outer_iter)
+{
+  const int nframes = len(I);
+  int i;
+  array I0_arr = extract< array >(I[0]);
+  tuple ts = extract< tuple >(I0_arr.attr("shape"));
+  const int ny = extract< int >(ts[0]);
+  const int nx = extract< int >(ts[1]);
+  int x, y;
+  
+  float *I_arr = new float[nx*ny*nframes];
+  float *u = new float[nx*ny*(nframes-1)];
+  float *v = new float[nx*ny*(nframes-1)];
+  
+  for (i = 0; i < nframes; i++)
+  {
+    array I_i = extract< array >(I[i]);
+    PyObject *obj_ptr = I_i.ptr();
+    unsigned char *I_data = (unsigned char *)PyArray_DATA(obj_ptr);
+	  for (x = 0; x < nx; x++)
+      for (y = 0; y < ny; y++)  
+        I_arr[i*nx*ny + y*nx + x] = I_data[y*nx + x];
+  }
+  
+  //brox_optic_flow(I_arr, u, v, nx, ny, nframes, 75.0, 7.0, 10, 0.75, 1e-4, 1, 15, 0);
+  brox_optic_flow(I_arr, u, v, nx, ny, nframes, alpha, gamma, nscales, nu, tol, 
+                  inner_iter, outer_iter, 0);
+  
+  array U_ = make_array(ny, nx, nframes-1, 0.0);
+  array V_ = make_array(ny, nx, nframes-1, 0.0);
+  for (i = 0; i < nframes-1; i++)
+  {
+    for (x = 0; x < nx; x++)
+    {
+      for (y = 0; y < ny; y++)
+      {
+        U_[make_tuple(y, x, i)] = u[(nframes-2)*nx*ny + y*nx + x];
+        V_[make_tuple(y, x, i)] = v[(nframes-2)*nx*ny + y*nx + x];
+      }
+    }
+  }
+  
+  tuple UV = make_tuple(U_, V_);
+  
+  /*CImg< double > V(nx, ny, 1, 2);
+  for (x = 0; x < nx; x++)
+  {
+    for (y = 0; y < ny; y++)
+    {
+      V(x, y, 0, 0) = u[(nframes-2)*nx*ny + y*nx + x];
+      V(x, y, 0, 1) = v[(nframes-2)*nx*ny + y*nx + x];
+    }
+  }*/
+  
+  delete[] I_arr;
+  delete[] u;
+  delete[] v;
+  
+  return UV;
+}
+#endif
+
 #ifdef WITH_CLG
 CImg< double > extract_motion_clg(const CImg< unsigned char > &I1, 
                                   const CImg< unsigned char > &I2, 
@@ -192,6 +317,28 @@ BOOST_PYTHON_MODULE(core)
       (boost::python::arg("sigma")=0.8f, 
        boost::python::arg("alpha")=80.0f, 
        boost::python::arg("gamma")=5.0f));
+  #endif
+  
+  #ifdef WITH_BROX2
+  def("extract_motion_brox2", &extract_motion_brox2, 
+      (boost::python::arg("alpha")=50.0f, 
+       boost::python::arg("gamma")=5.0f, 
+       boost::python::arg("nscales")=10, 
+       boost::python::arg("nu")=0.75f, 
+       boost::python::arg("tol")=1e-4, 
+       boost::python::arg("inner_iter")=1, 
+       boost::python::arg("outer_iter")=50));
+  #endif
+ 
+  #ifdef WITH_BROX_ST
+  def("extract_motion_brox_st", &extract_motion_brox_st, 
+      (boost::python::arg("alpha")=18.0f, 
+       boost::python::arg("gamma")=7.0f, 
+       boost::python::arg("nscales")=100, 
+       boost::python::arg("nu")=0.75, 
+       boost::python::arg("tol")=0.0001, 
+       boost::python::arg("inner_iter")=1, 
+       boost::python::arg("outer_iter")=15));
   #endif
   
   #ifdef WITH_CLG
