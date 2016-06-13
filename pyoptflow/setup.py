@@ -1,8 +1,10 @@
 
 from distutils.core import setup, Extension
 
-with_brox = True
-with_clg  = True
+with_brox    = False
+with_brox2   = False
+with_brox_st = False
+with_clg     = False
 
 ext_include_dirs = []
 ext_library_dirs = []
@@ -13,6 +15,12 @@ if with_brox == True:
   ext_include_dirs.append("./pyoptflow/ext/brox")
   ext_library_dirs.append("./pyoptflow/ext/brox")
   ext_libraries.append("of")
+
+if with_brox2 == True:
+  ext_include_dirs.append("./pyoptflow/ext/brox2")
+
+if with_brox_st == True:
+  ext_include_dirs.append("./pyoptflow/ext/brox_st")
 
 if with_clg == True:
   ext_include_dirs.append("./pyoptflow/ext/clg")
@@ -36,8 +44,18 @@ library_dirs.extend(ext_library_dirs)
 sources = ["./pyoptflow/core/core.cpp", "./pyoptflow/core/utils.cpp"]
 sources.extend(ext_sources)
 
-libraries = ["boost_python", "optflow"] #, "tiff", "png"
+libraries = ["boost_python", "optflow", "tiff", "png"]
 libraries.extend(ext_libraries)
+
+define_macros = []
+if with_brox == True:
+  define_macros.append(("WITH_BROX", 1))
+if with_brox2 == True:
+  define_macros.append(("WITH_BROX2", 1))
+if with_brox_st == True:
+  define_macros.append(("WITH_BROX_ST", 1))
+if with_clg == True:
+  define_macros.append(("WITH_CLG", 1))
 
 core = Extension("pyoptflow.core", 
                  include_dirs=include_dirs, 
@@ -45,10 +63,10 @@ core = Extension("pyoptflow.core",
                  sources=sources, 
                  libraries=libraries, 
                  extra_compile_args=["-std=c99"], 
-                 define_macros=[("WITH_BROX", 1), ("WITH_CLG", 1)]) # TODO: Make these optional.
+                 define_macros=define_macros)
 
 setup(name="pyoptflow", 
-      version="0.3", 
+      version="0.4", 
       description="Python Interface for Optflow", 
       author="Seppo Pulkkinen", 
       author_email="seppo.pulkkinen@fmi.fi", 
