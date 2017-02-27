@@ -29,7 +29,6 @@ extern "C" {
 #include <iostream>
 
 using namespace boost::python;
-using namespace boost::python::numeric;
 using namespace cimg_library;
 using namespace utils;
 
@@ -65,17 +64,17 @@ CImg< double > extract_motion_lucaskanade(const CImg< unsigned char > &I1,
   return V;
 }
 
-tuple extract_motion_proesmans(const CImg< unsigned char > &I1, 
-                               const CImg< unsigned char > &I2, 
-                               float lam, 
-                               int num_iter, 
-                               int num_levels)
+boost::python::tuple extract_motion_proesmans(const CImg< unsigned char > &I1, 
+                                              const CImg< unsigned char > &I2, 
+                                              float lam, 
+                                              int num_iter, 
+                                              int num_levels)
 {
   PyramidalProesmans me(num_iter, lam, num_levels, Proesmans::NEUMANN);
   CImg< double > VF, VB;
   me.compute(I1, I2, VF, VB);
   
-  return make_tuple(VF, VB);
+  return boost::python::make_tuple(VF, VB);
 }
 
 #ifdef WITH_BROX
@@ -168,13 +167,13 @@ CImg< double > extract_motion_brox2(const CImg< unsigned char > &I1,
 #ifdef WITH_BROX_ST
 /*CImg< double > extract_motion_brox_st(const tuple &I, float alpha, float gamma, 
   int nscales, float nu, float tol, int inner_iter, int outer_iter)*/
-tuple extract_motion_brox_st(const tuple &I, float alpha, float gamma, 
+boost::python::tuple extract_motion_brox_st(const tuple &I, float alpha, float gamma, 
   int nscales, float nu, float tol, int inner_iter, int outer_iter)
 {
   const int nframes = len(I);
   int i;
-  array I0_arr = extract< array >(I[0]);
-  tuple ts = extract< tuple >(I0_arr.attr("shape"));
+  numeric::array I0_arr = extract< numeric::array >(I[0]);
+  boost::python::tuple ts = extract< tuple >(I0_arr.attr("shape"));
   const int ny = extract< int >(ts[0]);
   const int nx = extract< int >(ts[1]);
   int x, y;
@@ -185,7 +184,7 @@ tuple extract_motion_brox_st(const tuple &I, float alpha, float gamma,
   
   for (i = 0; i < nframes; i++)
   {
-    array I_i = extract< array >(I[i]);
+    numeric::array I_i = extract< numeric::array >(I[i]);
     PyObject *obj_ptr = I_i.ptr();
     unsigned char *I_data = (unsigned char *)PyArray_DATA(obj_ptr);
 	  for (x = 0; x < nx; x++)
@@ -197,8 +196,8 @@ tuple extract_motion_brox_st(const tuple &I, float alpha, float gamma,
   brox_optic_flow(I_arr, u, v, nx, ny, nframes, alpha, gamma, nscales, nu, tol, 
                   inner_iter, outer_iter, 0);
   
-  array U_ = make_array(ny, nx, nframes-1, 0.0);
-  array V_ = make_array(ny, nx, nframes-1, 0.0);
+  numeric::array U_ = make_array(ny, nx, nframes-1, 0.0);
+  numeric::array V_ = make_array(ny, nx, nframes-1, 0.0);
   for (i = 0; i < nframes-1; i++)
   {
     for (x = 0; x < nx; x++)
@@ -211,7 +210,7 @@ tuple extract_motion_brox_st(const tuple &I, float alpha, float gamma,
     }
   }
   
-  tuple UV = make_tuple(U_, V_);
+  boost::python::tuple UV = make_tuple(U_, V_);
   
   /*CImg< double > V(nx, ny, 1, 2);
   for (x = 0; x < nx; x++)
@@ -288,7 +287,7 @@ CImg< double > extract_motion_clg(const CImg< unsigned char > &I1,
 
 BOOST_PYTHON_MODULE(core)
 {
-  array::set_module_and_type("numpy", "ndarray");
+  numeric::array::set_module_and_type("numpy", "ndarray");
   to_python_converter< CImg< double >, CImg_to_ndarray >();
   import_array();
   ndarray_to_CImg();

@@ -6,18 +6,17 @@
 #include <CImg.h>
 
 using namespace boost::python;
-using namespace boost::python::numeric;
 using namespace cimg_library;
 
 namespace utils
 {
-  array make_array(int m, int n, int d, double fill);
+  numeric::array make_array(int m, int n, int d, double fill);
   
   struct CImg_to_ndarray
   {
     static PyObject* convert(const CImg< double > &I)
     {
-      array I_ndarray = make_array(I.height(), I.width(), I.spectrum(), 0.0);
+      numeric::array I_ndarray = make_array(I.height(), I.width(), I.spectrum(), 0.0);
       
       for(int y = 0; y < I.height(); y++)
         for(int x = 0; x < I.width(); x++)
