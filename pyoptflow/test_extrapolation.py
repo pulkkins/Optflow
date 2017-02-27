@@ -54,5 +54,5 @@ for t in arange(1, 6):
   cb.set_label("rain rate (mm/h)")
   xticks([])
   yticks([])
-  savefig("input_extrap_%d.png" % t, bbox_inches="tight")
+  savefig("input_extrap_%02d.png" % t, bbox_inches="tight")
   close()

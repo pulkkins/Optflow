@@ -62,6 +62,7 @@ def semilagrangian(I, V, t, n_steps, n_iter=3, inverse=True):
   
   XYW = XY + V_tot
   XYW = [XYW[:, :, 1], XYW[:, :, 0]]
-  IW = reshape(map_coordinates(I, XYW, mode="constant", cval=nan), I.shape)
+  IW = reshape(map_coordinates(I, XYW, mode="constant", cval=nan, order=1), 
+               I.shape)
   
   return IW

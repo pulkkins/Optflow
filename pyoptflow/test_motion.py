@@ -3,7 +3,7 @@
 
 from pylab import *
 import h5py
-from pyoptflow import utils, visualization
+from pyoptflow import io_utils, utils, visualization
 from pyoptflow.core import extract_motion_proesmans
 
 # Read rainfall maps from HDF5 files (in the ODIM format).
@@ -20,7 +20,7 @@ I2_[I2 < 0.05] = nan
 figure()
 imshow(I1_, vmin=0.05, vmax=10)
 cb = colorbar()
-cb.set_label("rain rate (mm/h)")
+cb.set_label("precipitation intensity (mm/h)")
 xticks([])
 yticks([])
 savefig("input1.png", bbox_inches="tight")
@@ -28,7 +28,7 @@ savefig("input1.png", bbox_inches="tight")
 figure()
 imshow(I2_, vmin=0.05, vmax=10)
 cb = colorbar()
-cb.set_label("rain rate (mm/h)")
+cb.set_label("precipitation intensity (mm/h)")
 xticks([])
 yticks([])
 savefig("input2.png", bbox_inches="tight")
@@ -61,5 +61,8 @@ savefig("motion_quiver.png", bbox_inches="tight")
 
 # Quiver plot on top of the input image.
 visualization.plot_motion_field_overlay(I1_, V, 0.05, 10.0, stride=15, 
-                                        colorbar_label="rain rate (mm/h)")
+                                        colorbar_label="precipitation intensity (mm/h)")
 savefig("motion_overlay.png", bbox_inches="tight", dpi=200)
+
+io_utils.write_ODIM_HDF5(V, "motion.h5", ignore_missing_attrs=True, 
+                         write_as_image=True)

@@ -55,5 +55,5 @@ for i in range(len(I_interp)):
   cb.set_label("rain rate (mm/h)")
   xticks([])
   yticks([])
-  savefig("input_interp_%d.png" % (i+1), bbox_inches="tight")
+  savefig("input_interp_%02d.png" % (i+1), bbox_inches="tight")
   close()

@@ -1,14 +1,19 @@
-"""Methods for reading and writing motion vector fields from/into ODIM HDF5 
-files (a file format for weather radar data). The currently implemented methods 
-are for dense vector fields (i.e. motion vectors are computed for each pixel)."""
+"""Methods for reading and writing motion vector fields from/into different 
+file formats. The currently implemented methods are for dense vector fields 
+(i.e. motion vectors are computed for each pixel)."""
 
 from collections import defaultdict
 from datetime import datetime
-import h5py
+try:
+  import h5py
+  h5py_imported = True
+except ImportError:
+  h5py_imported = False
 from numpy import array, float32, inf, isfinite, nan, size, zeros
 
 def read_ODIM_HDF5(filename):
-  """Read a motion vector field from an ODIM HDF5 file.
+  """Read a motion vector field from an ODIM HDF5 file (a file format for 
+  weather radar data).
   
   Parameters
   ----------
@@ -22,6 +27,9 @@ def read_ODIM_HDF5(filename):
     A motion vector field that is a three-dimensional array containing u- and 
     v-components and n quality channels.
   """
+  if not h5py_imported:
+    raise Exception("h5py not found, please check your installation")
+  
   h5file = h5py.File(filename, 'r')
   
   V = None
@@ -39,9 +47,9 @@ def read_ODIM_HDF5(filename):
       V_ = grp_data["data"][...]
       if V == None:
         V = zeros((V_.shape[0], V_.shape[1], num_channels))
-      if qty == "AMVX":
+      if qty == "AMVU":
         V[:, :, 0] = V_
-      elif qty == "AMVY":
+      elif qty == "AMVV":
         V[:, :, 1] = V_
       else:
         V[:, :, 1+int(qty[14:])] = V_
@@ -52,16 +60,17 @@ def read_ODIM_HDF5(filename):
 
 def write_ODIM_HDF5(V, filename, ignore_missing_attrs=False, 
                     write_as_image=False, **kwargs):
-  """Write a motion vector field into an ODIM HDF5 file. The motion field is 
-  assumed to be in map coordinates obtained from a cartographic projection.
+  """Write a motion vector field into an ODIM HDF5 file (a file format for 
+  weather radar data). The motion field is assumed to be in map coordinates 
+  obtained from a cartographic projection.
   
   Parameters
   ----------
   V : array-like
     The motion vector field.
   kwargs : dict
-    Attributes that are written to the HDF5 file. The dictionary should contain 
-    the following key-value pairs:\n
+    Attributes that are written to the HDF5 file. The keyword arguments should 
+    contain the following key-value pairs:\n
     \n
     projdef : str\n
       Proj4-compatible projection definition.\n
@@ -88,6 +97,9 @@ def write_ODIM_HDF5(V, filename, ignore_missing_attrs=False,
     If True, add image attributes to the written HDF5 datasets. When these 
     attributes are set, the datasets can be quickly viewed as images in hdfview.
   """
+  if not h5py_imported:
+    raise Exception("h5py not found, please check your installation")
+  
   kwargs = defaultdict(lambda:"none", kwargs)
   missing_attrs = []
   
@@ -154,7 +166,7 @@ def write_ODIM_HDF5(V, filename, ignore_missing_attrs=False,
   grp_what.attrs["gain"]     = 1.0
   grp_what.attrs["nodata"]   = nan
   grp_what.attrs["offset"]   = 0.0
-  grp_what.attrs["quantity"] = "AMVX"
+  grp_what.attrs["quantity"] = "AMVU"
   grp_what.attrs["undetect"] = -inf
   
   grp_data2 = grp_dataset.create_group("data2")
@@ -165,7 +177,7 @@ def write_ODIM_HDF5(V, filename, ignore_missing_attrs=False,
   grp_what.attrs["gain"]     = 1.0
   grp_what.attrs["nodata"]   = nan
   grp_what.attrs["offset"]   = 0.0
-  grp_what.attrs["quantity"] = "AMVY"
+  grp_what.attrs["quantity"] = "AMVV"
   grp_what.attrs["undetect"] = -inf
   
   for i in range(V.shape[2]-2):
