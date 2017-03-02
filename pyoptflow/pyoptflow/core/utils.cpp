@@ -11,7 +11,7 @@ namespace utils
     boost::python::tuple t = boost::python::tuple(l);
     numeric::array a(t);
     numeric::array a_ = (numeric::array)a.copy();
-    a_.resize(make_tuple(m, n, d));
+    a_.resize(boost::python::make_tuple(m, n, d));
     
     return a_;
   }

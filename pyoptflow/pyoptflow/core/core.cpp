@@ -204,13 +204,13 @@ boost::python::tuple extract_motion_brox_st(const tuple &I, float alpha, float g
     {
       for (y = 0; y < ny; y++)
       {
-        U_[make_tuple(y, x, i)] = u[(nframes-2)*nx*ny + y*nx + x];
-        V_[make_tuple(y, x, i)] = v[(nframes-2)*nx*ny + y*nx + x];
+        U_[boost::python::make_tuple(y, x, i)] = u[(nframes-2)*nx*ny + y*nx + x];
+        V_[boost::python::make_tuple(y, x, i)] = v[(nframes-2)*nx*ny + y*nx + x];
       }
     }
   }
   
-  boost::python::tuple UV = make_tuple(U_, V_);
+  boost::python::tuple UV = boost::python::make_tuple(U_, V_);
   
   /*CImg< double > V(nx, ny, 1, 2);
   for (x = 0; x < nx; x++)

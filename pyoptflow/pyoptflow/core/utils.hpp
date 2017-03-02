@@ -21,7 +21,7 @@ namespace utils
       for(int y = 0; y < I.height(); y++)
         for(int x = 0; x < I.width(); x++)
           for(int c = 0; c < I.spectrum(); c++)
-            I_ndarray[make_tuple(y, x, c)] = I(x, y, 0, c);
+            I_ndarray[boost::python::make_tuple(y, x, c)] = I(x, y, 0, c);
       
       return incref(I_ndarray.ptr());
     }
