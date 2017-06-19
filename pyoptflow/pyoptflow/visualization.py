@@ -1,6 +1,6 @@
 """Plotting of motion fields and other visualization tools."""
 
-from matplotlib.pylab import figure
+from matplotlib.pylab import cm, figure
 from numpy import arange, meshgrid, nan, size
 from scipy.ndimage import gaussian_filter
 try:
@@ -46,9 +46,9 @@ def plot_contour_overlay(I1, I2, contour_level, minval, maxval):
   I2[I2 < minval] = nan
   I2[I2 > maxval] = maxval
   
-  im = ax.imshow(I2, vmin=minval, vmax=maxval)
+  im = ax.imshow(I2, vmin=minval, vmax=maxval, cmap=cm.gray)
   for ct in contours:
-    ax.plot(ct[:, 1], ct[:, 0], linewidth=2, linestyle="-", color='k')
+    ax.plot(ct[:, 1], ct[:, 0], linewidth=2.0, linestyle="-", color='r')
   
   fig.colorbar(im)
   
@@ -125,7 +125,7 @@ def plot_motion_field_components(V, sel_comp=["U", "V"], minval=-10.0,
     else:
       ci = 1
     
-    im = ax.imshow(V[:, :, ci], vmin=minval, vmax=maxval)
+    im = ax.imshow(V[:, :, ci], vmin=minval, vmax=maxval, cmap=cm.jet)
     ax.set_xticks([])
     ax.set_yticks([])
     
@@ -183,7 +183,7 @@ def plot_motion_field_overlay(I, V, minval, maxval, stride=10,
   X,Y = meshgrid(arange(size(I, 1)), -arange(size(I, 0)))
   
   im = ax.imshow(I, extent=(0, size(I, 1), -size(I, 0)+1, 0), vmin=minval, 
-                 vmax=maxval)
+                 vmax=maxval, cmap=cm.jet)
   ax.quiver(X[::stride, ::stride], Y[::stride, ::stride], 
             V[::stride, ::stride, 0], -V[::stride, ::stride, 1], 
             color='r', units="xy", scale=1.0)
@@ -229,7 +229,7 @@ def plot_motion_field_quality(V, qc, minval, maxval, plot_title=None):
   fig = figure()
   ax = fig.gca()
   
-  im = ax.imshow(V[:, :, 2+qc], vmin=minval, vmax=maxval)
+  im = ax.imshow(V[:, :, 2+qc], vmin=minval, vmax=maxval, cmap=cm.jet)
   ax.set_xticks([])
   ax.set_yticks([])
   
