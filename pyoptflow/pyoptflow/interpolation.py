@@ -33,10 +33,10 @@ def interpolate(I1, I2, VF, n, VB=None):
   if I1.shape != I2.shape:
     raise ValueError("I1 and I2 must have the same shape")
   if VF.shape[0:2] != I1.shape or VF.shape[0:2] != I2.shape or \
-     (VB != None and (VB.shape[0:2] != I1.shape or VB.shape[0:2] != I2.shape)):
+     (VB is not None and (VB.shape[0:2] != I1.shape or VB.shape[0:2] != I2.shape)):
     raise ValueError("V must have the same shape as I1 and I2")
   
-  if VB == None:
+  if VB is None:
     VB = -VF
   
   X,Y = meshgrid(arange(size(I1, 1)), arange(size(I1, 0)))

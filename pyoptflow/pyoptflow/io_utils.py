@@ -45,7 +45,7 @@ def read_ODIM_HDF5(filename):
       grp_data = grp_dataset[dgn]
       qty = grp_data["what"].attrs["quantity"]
       V_ = grp_data["data"][...]
-      if V == None:
+      if V is None:
         V = zeros((V_.shape[0], V_.shape[1], num_channels))
       if qty == "AMVU":
         V[:, :, 0] = V_
