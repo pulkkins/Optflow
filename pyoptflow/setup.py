@@ -1,4 +1,4 @@
-
+import numpy
 from distutils.core import setup, Extension
 
 with_brox    = False
@@ -33,7 +33,8 @@ if with_clg == True:
 
 include_dirs = ["/usr/include/optflow", 
                 "/usr/local/include/optflow", 
-                "./pyoptflow/core"]
+                "./pyoptflow/core",
+                numpy.get_include()]
 include_dirs.extend(ext_include_dirs)
 
 library_dirs = ["/usr/lib", 
