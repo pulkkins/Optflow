@@ -1,10 +1,12 @@
 
 from distutils.core import setup, Extension
 
-with_brox    = False
-with_brox2   = False
-with_brox_st = False
-with_clg     = False
+# The external algorithms that will be compiled with pyoptflow. Please see the 
+# README file of each subdirectory in pyoptflow/ext to obtain the required files.
+with_brox     = False
+with_brox2    = False
+with_brox2_st = False
+with_clg      = False
 
 ext_include_dirs = []
 ext_library_dirs = []
@@ -19,8 +21,8 @@ if with_brox == True:
 if with_brox2 == True:
   ext_include_dirs.append("./pyoptflow/ext/brox2")
 
-if with_brox_st == True:
-  ext_include_dirs.append("./pyoptflow/ext/brox_st")
+if with_brox2_st == True:
+  ext_include_dirs.append("./pyoptflow/ext/brox2_st")
 
 if with_clg == True:
   ext_include_dirs.append("./pyoptflow/ext/clg")
@@ -52,8 +54,8 @@ if with_brox == True:
   define_macros.append(("WITH_BROX", 1))
 if with_brox2 == True:
   define_macros.append(("WITH_BROX2", 1))
-if with_brox_st == True:
-  define_macros.append(("WITH_BROX_ST", 1))
+if with_brox2_st == True:
+  define_macros.append(("WITH_BROX2_ST", 1))
 if with_clg == True:
   define_macros.append(("WITH_CLG", 1))
 

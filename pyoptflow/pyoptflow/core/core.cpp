@@ -16,8 +16,8 @@
 #include "../ext/brox2/brox_optic_flow.h"
 #endif
 
-#ifdef WITH_BROX_ST
-#include "../ext/brox_st/brox_optic_flow.h"
+#ifdef WITH_BROX2_ST
+#include "../ext/brox2_st/brox_optic_flow.h"
 #endif
 
 #ifdef WITH_CLG
@@ -164,10 +164,10 @@ CImg< double > extract_motion_brox2(const CImg< unsigned char > &I1,
 }
 #endif
 
-#ifdef WITH_BROX_ST
-/*CImg< double > extract_motion_brox_st(const tuple &I, float alpha, float gamma, 
+#ifdef WITH_BROX2_ST
+/*CImg< double > extract_motion_brox2_st(const tuple &I, float alpha, float gamma, 
   int nscales, float nu, float tol, int inner_iter, int outer_iter)*/
-boost::python::tuple extract_motion_brox_st(const tuple &I, float alpha, float gamma, 
+boost::python::tuple extract_motion_brox2_st(const tuple &I, float alpha, float gamma, 
   int nscales, float nu, float tol, int inner_iter, int outer_iter)
 {
   const int nframes = len(I);
@@ -329,8 +329,8 @@ BOOST_PYTHON_MODULE(core)
        boost::python::arg("outer_iter")=50));
   #endif
  
-  #ifdef WITH_BROX_ST
-  def("extract_motion_brox_st", &extract_motion_brox_st, 
+  #ifdef WITH_BROX2_ST
+  def("extract_motion_brox2_st", &extract_motion_brox2_st, 
       (boost::python::arg("alpha")=18.0f, 
        boost::python::arg("gamma")=7.0f, 
        boost::python::arg("nscales")=100, 
