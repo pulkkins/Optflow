@@ -39,7 +39,7 @@ namespace utils
     {
       if(!PyArray_Check(obj_ptr))
         return NULL;
-      PyArray_Descr *dtype = PyArray_DTYPE((PyArrayObject *)obj_ptr);
+      PyArray_Descr *dtype = PyArray_DESCR((PyArrayObject *)obj_ptr);
       if(dtype->type != 'B' || dtype->kind != 'u')
         return NULL;
       

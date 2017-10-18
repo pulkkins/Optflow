@@ -2,7 +2,7 @@
 
 from numpy import isfinite, log, ubyte
 from scipy.ndimage import gaussian_filter
-from skimage.exposure import equalize_hist, rescale_intensity
+#from skimage.exposure import equalize_hist, rescale_intensity
 
 def dBZ_to_ubyte(I, dBZ_min=-10.0, dBZ_max=50.0, filter_stddev=3.0):
   """Convert a dBZ field into a 8-bit image, as required by Optflow. Optionally, 

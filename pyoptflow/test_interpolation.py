@@ -1,5 +1,5 @@
-# A simple test script for temporal interpolation between two rainfall maps by 
-# using a motion field.
+# A simple test script for temporal interpolation between two precipitation 
+# fields by using a motion field.
 
 from pylab import *
 import h5py
@@ -7,17 +7,17 @@ from pyoptflow import utils
 from pyoptflow.core import extract_motion_proesmans
 from pyoptflow.interpolation import interpolate
 
-# Read rainfall maps from HDF5 files (in the ODIM format).
-I1 = h5py.File("rainfallmap1.h5", 'r')["dataset1"]["data1"]["data"][...]
-I2 = h5py.File("rainfallmap2.h5", 'r')["dataset1"]["data1"]["data"][...]
+# Read precipitation fields from HDF5 files (in the ODIM format).
+I1 = h5py.File("precipfield1.h5", 'r')["dataset1"]["data1"]["data"][...]
+I2 = h5py.File("precipfield2.h5", 'r')["dataset1"]["data1"]["data"][...]
 
-# Threshold out near-zero rainfall intensities.
+# Threshold out near-zero precipitation intensities.
 I1_ = I1.copy()
 I1_[I1 < 0.05] = nan
 I2_ = I2.copy()
 I2_[I2 < 0.05] = nan
 
-# Plot the original rainfall maps.
+# Plot the original precipitation fields.
 figure()
 imshow(I1_, vmin=0.05, vmax=10)
 cb = colorbar()
@@ -34,8 +34,8 @@ xticks([])
 yticks([])
 savefig("input2.png", bbox_inches="tight")
 
-# Convert the rainfall maps to unsigned byte, as required by the Optflow 
-# motion detection algorithms. Gaussian filter with std. dev. 3 is applied.
+# Convert the precipitation fields to unsigned byte, as required by the Optflow 
+# motion estimation algorithms. Gaussian filter with std. dev. 3 is applied.
 I1_ubyte = utils.rainfall_to_ubyte(I1, R_min=0.05, R_max=10.0, filter_stddev=3.0)
 I2_ubyte = utils.rainfall_to_ubyte(I2, R_min=0.05, R_max=10.0, filter_stddev=3.0)
 

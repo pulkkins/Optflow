@@ -38,8 +38,10 @@ def read_ODIM_HDF5(filename):
   num_channels = 0
   for dgn in grp_dataset.keys():
     if dgn[0:4] == "data":
-      num_channels += 1
-  print(num_channels)
+      qty = grp_dataset[dgn]["what"].attrs["quantity"]
+      if qty[0:4] in ["AMVU", "AMVV", "QIND"]:
+        num_channels += 1
+  
   for dgn in grp_dataset.keys():
     if dgn[0:4] == "data":
       grp_data = grp_dataset[dgn]
@@ -51,8 +53,8 @@ def read_ODIM_HDF5(filename):
         V[:, :, 0] = V_
       elif qty == "AMVV":
         V[:, :, 1] = V_
-      else:
-        V[:, :, 1+int(qty[14:])] = V_
+      elif qty[0:4] == "QIND":
+        V[:, :, 1+int(qty[4:])] = V_
   
   h5file.close()
   
