@@ -125,7 +125,7 @@ def plot_motion_field_components(V, sel_comp=["U", "V"], minval=-10.0,
     else:
       ci = 1
     
-    im = ax.imshow(V[:, :, ci], vmin=minval, vmax=maxval, cmap=cm.jet)
+    im = ax.imshow(V[:, :, ci], vmin=minval, vmax=maxval, cmap=cm.RdBu_r)
     ax.set_xticks([])
     ax.set_yticks([])
     
@@ -186,7 +186,7 @@ def plot_motion_field_overlay(I, V, minval, maxval, stride=10,
                  vmax=maxval, cmap=cm.jet)
   ax.quiver(X[::stride, ::stride], Y[::stride, ::stride], 
             V[::stride, ::stride, 0], -V[::stride, ::stride, 1], 
-            color='r', units="xy", scale=1.0)
+            color='k', units="xy", scale=1.0)
   cb = fig.colorbar(im)
   if colorbar_label != None:
     cb.set_label(colorbar_label)
@@ -229,7 +229,7 @@ def plot_motion_field_quality(V, qc, minval, maxval, plot_title=None):
   fig = figure()
   ax = fig.gca()
   
-  im = ax.imshow(V[:, :, 2+qc], vmin=minval, vmax=maxval, cmap=cm.jet)
+  im = ax.imshow(V[:, :, 2+qc], vmin=minval, vmax=maxval, cmap=cm.gray)
   ax.set_xticks([])
   ax.set_yticks([])
   

@@ -3,6 +3,7 @@
 
 from pylab import *
 import h5py
+from matplotlib import cm
 from pyoptflow import io_utils, utils, visualization
 from pyoptflow.core import extract_motion_proesmans
 
@@ -18,7 +19,7 @@ I2_[I2 < 0.05] = nan
 
 # Plot the original precipitation fields.
 figure()
-imshow(I1_, vmin=0.05, vmax=10)
+imshow(I1_, vmin=0.05, vmax=10, cmap=cm.jet)
 cb = colorbar()
 cb.set_label("precipitation intensity (mm/h)")
 xticks([])
@@ -26,7 +27,7 @@ yticks([])
 savefig("input1.png", bbox_inches="tight")
 
 figure()
-imshow(I2_, vmin=0.05, vmax=10)
+imshow(I2_, vmin=0.05, vmax=10, cmap=cm.jet)
 cb = colorbar()
 cb.set_label("precipitation intensity (mm/h)")
 xticks([])
