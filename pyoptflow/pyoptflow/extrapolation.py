@@ -3,6 +3,7 @@
 from numpy import arange, dstack, meshgrid, nan, reshape, size, zeros
 from scipy.ndimage.interpolation import map_coordinates
 
+# TODO: Allow the user to compute the extrapolated field for multiple time steps at once.
 def semilagrangian(I, V, t, n_steps, n_iter=3, inverse=True):
   """Apply semi-Lagrangian extrapolation to an image by using a motion field. 
   In this scheme, the extrapolation is done in a by integrating the motion 

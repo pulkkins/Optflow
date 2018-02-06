@@ -12,8 +12,7 @@ except ImportError:
 from numpy import array, float32, inf, isfinite, nan, size, zeros
 
 def read_ODIM_HDF5(filename):
-  """Read a motion vector field from an ODIM HDF5 file (a file format for 
-  weather radar data).
+  """Read a motion vector field from a HDF5 file produced by write_ODIM_HDF5.
   
   Parameters
   ----------

@@ -35,7 +35,7 @@ def plot_contour_overlay(I1, I2, contour_level, minval, maxval):
   if I1.shape != I2.shape:
     raise ValueError("I1 and I2 must have the same shape")
   if not skimage_imported:
-    raise ImportError()
+    raise ImportError("skimage not found")
   
   contours = find_contours(gaussian_filter(I1, 1), contour_level)
   
